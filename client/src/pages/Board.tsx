@@ -181,6 +181,8 @@ export const Board = () => {
           ))}
         </AnimatePresence>
       </div>
+
+      {/* Tooltips */}
       <Tooltip
         id="delete-tooltip"
         className="z-50"
