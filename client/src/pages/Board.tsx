@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
+import { Tooltip } from "react-tooltip";
 
 interface Task {
   id: number;
@@ -148,6 +149,9 @@ export const Board = () => {
                 </span>
               </div>
               <motion.button
+                data-tooltip-id="delete-tooltip"
+                data-tooltip-content="Slett"
+                data-tooltip-place="top"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent toggleTask from being called
                   deleteTask(task.id);
@@ -158,7 +162,11 @@ export const Board = () => {
               >
                 X
               </motion.button>
+
               <motion.button
+                data-tooltip-id="edit-tooltip"
+                data-tooltip-content="Endre"
+                data-tooltip-place="top"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent toggleTask from being called
                   startEditing(task);
@@ -173,6 +181,28 @@ export const Board = () => {
           ))}
         </AnimatePresence>
       </div>
+      <Tooltip
+        id="delete-tooltip"
+        className="z-50"
+        style={{
+          backgroundColor: "#333",
+          color: "#fff",
+          borderRadius: "4px",
+          padding: "4px 8px",
+          fontSize: "12px",
+        }}
+      />
+      <Tooltip
+        id="edit-tooltip"
+        className="z-50"
+        style={{
+          backgroundColor: "#333",
+          color: "#fff",
+          borderRadius: "4px",
+          padding: "4px 8px",
+          fontSize: "12px",
+        }}
+      />
     </div>
   );
 };
