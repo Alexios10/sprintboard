@@ -37,7 +37,7 @@ export const Board = () => {
       return;
     }
 
-    const newTask = await createTask({ title: userInput, status: "To Do" });
+    const newTask = await createTask({ title: userInput, status: "Må gjøres" });
     setTasks([...tasks, newTask]);
     setUserInput("");
   }
@@ -57,11 +57,11 @@ export const Board = () => {
     if (!task) return;
 
     const newStatus =
-      task.status === "To Do"
-        ? "In Progress"
-        : task.status === "In Progress"
-        ? "Done"
-        : "To Do";
+      task.status === "Må gjøres"
+        ? "Pågår"
+        : task.status === "Pågår"
+        ? "Ferdig"
+        : "Må gjøres";
 
     await updateTaskApi({ ...task, status: newStatus });
     setTasks(tasks.map((t) => (t.id === id ? { ...t, status: newStatus } : t)));
@@ -137,20 +137,26 @@ export const Board = () => {
             >
               <div
                 className={`p-4 bg-white rounded shadow flex flex-col w-full ${
-                  task.status === "Done" ? "opacity-70" : ""
+                  task.status === "Ferdig" ? "opacity-70" : ""
                 }`}
                 onClick={() => toggleTask(task.id)}
               >
                 <div className="flex justify-between items-start">
                   <span
                     className={`flex-grow ${
-                      task.status === "Done" ? "line-through" : ""
+                      task.status === "Ferdig" ? "line-through" : ""
                     }`}
                   >
                     {task.title}
                   </span>
                 </div>
-                <span className="text-sm text-gray-400 mt-2">
+                <span
+                  className={
+                    task.status === "Pågår"
+                      ? "text-sm mt-2 text-green-400"
+                      : "text-sm text-gray-400 mt-2"
+                  }
+                >
                   {task.status}
                 </span>
               </div>
