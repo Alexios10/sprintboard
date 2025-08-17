@@ -73,7 +73,7 @@ export const Board = () => {
       return;
     }
 
-    if (editingId === null) return;
+    // if (editingId === null) return;
 
     setTasks(
       tasks.map((task) =>
