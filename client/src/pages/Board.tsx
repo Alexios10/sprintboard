@@ -1,42 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { Tooltip } from "react-tooltip";
-
-interface Task {
-  id: number;
-  text: string;
-  date: Date;
-  isDone: boolean;
-}
+import {
+  getTasks,
+  createTask,
+  updateTask as updateTaskApi,
+  deleteTask as deleteTaskApi,
+} from "../services/taskService";
+import type { TaskItem } from "../services/taskService";
 
 export const Board = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [userInput, setUserInput] = useState<string>("");
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  const timestamp = Date.now();
+  // const timestamp = Date.now();
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  async function fetchTasks() {
+    const data = await getTasks();
+    setTasks(data);
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setUserInput(e.target.value);
   }
 
-  function addTask() {
+  async function addTask() {
     if (!userInput.trim()) {
       alert("Du må skrive noe");
       return;
     }
 
-    setTasks([
-      ...tasks,
-      {
-        id: Date.now(),
-        text: userInput,
-        date: new Date(timestamp),
-        isDone: false,
-      },
-    ]);
+    const newTask = await createTask({ title: userInput, status: "To Do" });
+    setTasks([...tasks, newTask]);
     setUserInput("");
   }
 
@@ -50,35 +52,40 @@ export const Board = () => {
     }
   }
 
-  function toggleTask(id: number) {
-    setTasks(
-      tasks.map((task) =>
-        task.id === id ? { ...task, isDone: !task.isDone } : task
-      )
-    );
+  async function toggleTask(id: number) {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+
+    const newStatus =
+      task.status === "To Do"
+        ? "In Progress"
+        : task.status === "In Progress"
+        ? "Done"
+        : "To Do";
+
+    await updateTaskApi({ ...task, status: newStatus });
+    setTasks(tasks.map((t) => (t.id === id ? { ...t, status: newStatus } : t)));
   }
 
-  function deleteTask(id: number) {
-    setTasks(tasks.filter((task) => task.id !== id));
+  async function deleteTask(id: number) {
+    await deleteTaskApi(id);
+    setTasks(tasks.filter((t) => t.id !== id));
   }
 
-  function startEditing(task: Task) {
-    setUserInput(task.text);
+  function startEditing(task: TaskItem) {
+    setUserInput(task.title);
     setEditingId(task.id);
   }
 
-  function updateTask() {
-    if (!userInput.trim()) {
-      alert("Du må skrive noe for å endre");
-      return;
-    }
+  async function updateTask() {
+    if (!userInput.trim() || editingId === null) return;
 
-    // if (editingId === null) return;
+    const task = tasks.find((t) => t.id === editingId);
+    if (!task) return;
 
+    await updateTaskApi({ ...task, title: userInput });
     setTasks(
-      tasks.map((task) =>
-        task.id === editingId ? { ...task, text: userInput } : task
-      )
+      tasks.map((t) => (t.id === editingId ? { ...task, title: userInput } : t))
     );
     setUserInput("");
     setEditingId(null);
@@ -130,30 +137,30 @@ export const Board = () => {
             >
               <div
                 className={`p-4 bg-white rounded shadow flex flex-col w-full ${
-                  task.isDone ? "opacity-70" : ""
+                  task.status === "Done" ? "opacity-70" : ""
                 }`}
                 onClick={() => toggleTask(task.id)}
               >
                 <div className="flex justify-between items-start">
                   <span
-                    className={`flex-grow ${task.isDone ? "line-through" : ""}`}
+                    className={`flex-grow ${
+                      task.status === "Done" ? "line-through" : ""
+                    }`}
                   >
-                    {task.text}
+                    {task.title}
                   </span>
                 </div>
                 <span className="text-sm text-gray-400 mt-2">
-                  {task.isDone ? "Ferdig" : "Pågår"}
-                </span>
-                <span className="text-sm text-gray-400 mt-2">
-                  {task.date.toDateString()}
+                  {task.status}
                 </span>
               </div>
+
               <motion.button
                 data-tooltip-id="delete-tooltip"
                 data-tooltip-content="Slett"
                 data-tooltip-place="top"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent toggleTask from being called
+                  e.stopPropagation();
                   deleteTask(task.id);
                 }}
                 whileHover={{ scale: 1.2 }}
@@ -168,7 +175,7 @@ export const Board = () => {
                 data-tooltip-content="Endre"
                 data-tooltip-place="top"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent toggleTask from being called
+                  e.stopPropagation();
                   startEditing(task);
                 }}
                 className="text-gray-400 hover:text-blue-500 cursor-pointer absolute right-[1.2rem] bottom-3"
