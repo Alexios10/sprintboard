@@ -10,7 +10,7 @@ using SprintBoard.Api.Data;
 namespace SprintBoard.Api.Migrations
 {
     [DbContext(typeof(SprintBoardContext))]
-    [Migration("20250817180312_InitialCreate")]
+    [Migration("20250817182834_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

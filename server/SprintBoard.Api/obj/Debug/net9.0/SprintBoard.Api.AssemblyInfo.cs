@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SprintBoard.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79a5aa69f17ca4a99027e74a919f346b9c4117d3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a6ee151e7da885128f8c8f2bcf1f731f9f9d7761")]
 [assembly: System.Reflection.AssemblyProductAttribute("SprintBoard.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SprintBoard.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
