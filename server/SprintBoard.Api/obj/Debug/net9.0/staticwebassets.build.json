@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "cTKJU2LeE1AVhz5ZLkiVw0dxFk5RAKpr4UfXYuXshPA=",
+  "Source": "SprintBoard.Api",
+  "BasePath": "_content/SprintBoard.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
